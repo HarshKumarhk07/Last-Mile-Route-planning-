@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📍 Current Location</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-image: url('https://wallpapers.com/images/hd/world-map-aesthetic-aky27ab29pjqlih8.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+    }
+
+    .container {
+      background-color: rgba(31, 31, 31, 0.95);
+      padding: 2rem;
+      border-radius: 8px;
+      color: white;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .btn-glow {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      box-shadow: 0 0 15px rgba(0, 114, 255, 0.5);
+      color: white;
+      cursor: pointer;
+    }
+
+    .btn-glow:hover {
+      transform: scale(1.05);
+      transition: 0.3s;
+    }
+
+    .btn-copy {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      box-shadow: 0 0 15px rgba(0, 114, 255, 0.5);
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-copy:hover {
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-2xl font-bold mb-4">📍 Get Your Current Location</h1>
+  
+    <button onclick="getLocation()" class="px-4 py-2 rounded text-white btn-glow hover:scale-105 transition">
+      Get Location
+    </button>
+  
+    <div id="location" class="mt-4">
+      <p id="lat" class="text-xl"></p>
+      <p id="lon" class="text-xl"></p>
+    </div>
+  
+    <div id="errorMessage" class="text-red-500 hidden mt-4"></div>
+  
+    <!-- Copy Button -->
+    <button id="copyButton" class="btn-copy mt-4 hidden">Copy Location</button>
+  </div>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        document.getElementById('errorMessage').textContent = "Geolocation is not supported by this browser.";
+        document.getElementById('errorMessage').classList.remove('hidden');
+      }
+    }
+
+    function showPosition(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const location = `${lat}, ${lon}`;
+
+      // Display latitude and longitude
+      document.getElementById('lat').textContent = `Latitude: ${lat}`;
+      document.getElementById('lon').textContent = `Longitude: ${lon}`;
+      
+      // Show the Copy button
+      const copyButton = document.getElementById('copyButton');
+      copyButton.classList.remove('hidden');
+
+      // Add click event to copy the location to clipboard
+      copyButton.onclick = function() {
+        navigator.clipboard.writeText(location)
+          .then(() => {
+            alert('Location copied to clipboard!');
+          })
+          .catch((err) => {
+            console.error('Error copying to clipboard: ', err);
+          });
+      };
+    }
+
+    function showError(error) {
+      let message = "";
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          message = "User denied the request for Geolocation.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          message = "Location information is unavailable.";
+          break;
+        case error.TIMEOUT:
+          message = "The request to get user location timed out.";
+          break;
+        case error.UNKNOWN_ERROR:
+          message = "An unknown error occurred.";
+          break;
+      }
+      document.getElementById('errorMessage').textContent = message;
+      document.getElementById('errorMessage').classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>

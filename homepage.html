@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Last Mile Route Planning - Home</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #0e0e0e;
+      color: #fff;
+      scroll-behavior: smooth;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #0b0b0b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      z-index: 1000;
+      border-bottom: 1px solid #222;
+    }
+
+    nav .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #00aaff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      position: relative;
+    }
+
+    nav ul li {
+      position: relative;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #ccc;
+      font-size: 16px;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #00aaff;
+    }
+
+    /* Dropdown */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 35px;
+      background-color: #1c1c1c;
+      border-radius: 6px;
+      min-width: 140px;
+      z-index: 999;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 10px 15px;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #2a2a2a;
+      color: #00aaff;
+    }
+
+    nav ul li:hover .dropdown-content {
+      display: block;
+    }
+
+    header {
+      padding: 100px 20px 60px;
+      text-align: center;
+      background: linear-gradient(135deg, #00aaff, #005577);
+    }
+
+    header h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 18px;
+      color: #f0f0f0;
+    }
+
+    section {
+      padding: 60px 20px;
+      border-bottom: 1px solid #222;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    section h2 {
+      font-size: 28px;
+      color: #00aaff;
+      margin-bottom: 10px;
+    }
+
+    section p {
+      font-size: 16px;
+      color: #ccc;
+      margin-bottom: 20px;
+      max-width: 800px;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #00aaff;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #0088cc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      background-color: #1a1a1a;
+      font-size: 14px;
+      color: #888;
+    }
+
+    /* Responsive Nav */
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">🚀 RoutePlanner</div>
+    <ul>
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#deliveries">Deliveries</a></li>
+      <li><a href="#map">Map</a></li>
+      <li>
+        <a>Packages ▼</a>
+        <div class="dropdown-content">
+          <a href="#packages">Manage Packages</a>
+          <a href="#history">Delivery History</a>
+        </div>
+      </li>
+      <li><a href="#">Logout</a></li>
+    </ul>
+  </nav>
+
+  <header id="home">
+    <h1>Last Mile Route Planning</h1>
+    <p>Your delivery partner in speed, precision, and smart logistics.</p>
+  </header>
+
+  <section id="deliveries">
+    <h2>📦 Manage Deliveries</h2>
+    <p>Assign, monitor, and manage delivery requests with real-time insights and location tracking for each driver.</p>
+    <a href="#" class="btn">Go to Deliveries</a>
+  </section>
+
+  <section id="map">
+    <h2>🗺️ Route Optimization</h2>
+    <p>Enter your destination details and we’ll generate the fastest, most efficient route using smart routing algorithms.</p>
+    <a href="#" class="btn">Optimize Route</a>
+  </section>
+
+  <section id="packages">
+    <h2>🚚 Track Drivers</h2>
+    <p>Visualize your entire fleet in real-time. Know exactly where your packages and people are — always.</p>
+    <a href="#" class="btn">Live Map View</a>
+  </section>
+
+  <section id="history">
+    <h2>📁 Package Manager</h2>
+    <p>Add, update, or remove package information on the fly. Make sure everything is sorted, tracked, and accounted for.</p>
+    <a href="#" class="btn">Manage Packages</a>
+  </section>
+
+  <footer>
+    &copy; 2025 Last Mile Route Planning. Built for performance & precision.
+  </footer>
+
+  <script>
+    // Fade in sections on scroll
+    const sections = document.querySelectorAll('section');
+
+    const reveal = () => {
+      sections.forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          sec.classList.add('visible');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+  </script>
+
+</body>
+</html>

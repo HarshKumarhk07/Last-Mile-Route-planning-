@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Mile Route Planning - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://static.vecteezy.com/system/resources/previews/035/346/925/non_2x/ai-generated-rear-view-of-man-in-yellow-raincoat-riding-bicycle-under-heavy-rain-on-rainy-night-a-courier-rides-a-bicycle-through-a-rainy-evening-or-night-city-ai-generated-free-photo.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            color: white;
+            width: 400px;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .login-container h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+        }
+
+        .login-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin: 10px 0;
+            text-decoration: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .login-container .login-btn:hover {
+            background: #0056b3;
+        }
+
+        .login-container .signup-link {
+            color: #007bff;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>LAST MILE ROUTE PLANNING</h1>
+        <h2>Log in</h2>
+        <input type="email" placeholder="Email address">
+        <input type="password" placeholder="Password">
+        <a href="#" class="forgot-password">Forgot password?</a>
+        <button class="login-btn">Log in</button>
+        <a href="#" class="signup-link">Don't have an account? Sign up</a>
+    </div>
+</body>
+</html>

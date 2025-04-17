@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🗺️ Route Planner</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 0;
+    }
+
+    .overlay-panel {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(31, 31, 31, 0.95);
+      padding: 1rem;
+      border-radius: 8px;
+      z-index: 1000;
+      width: 320px;
+      color: white;
+    }
+
+    .btn-glow {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      box-shadow: 0 0 15px rgba(0, 114, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🧭 Floating Panel -->
+  <div class="overlay-panel">
+    <h1 class="text-2xl font-bold text-center mb-4">🗺️ Route Planner</h1>
+
+    <div class="grid grid-cols-1 gap-3 mb-4">
+      <input type="text" id="start" placeholder="Start Address" class="p-2 rounded w-full text-black"/>
+      <input type="text" id="end" placeholder="Destination Address" class="p-2 rounded w-full text-black"/>
+    </div>
+
+    <div class="flex gap-2 mb-4">
+      <button onclick="findRoute()" class="flex-1 px-4 py-2 rounded text-white btn-glow hover:scale-105 transition">Find</button>
+      <button onclick="resetMap()" class="flex-1 px-4 py-2 rounded bg-red-600 hover:bg-red-700 transition">Reset</button>
+    </div>
+    <!-- Add this -->
+<div class="mt-4 flex justify-center">
+  <a href="geolocation.html" target="_blank" class="px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700">
+    Go to Geolocation
+  </a>
+</div>
+
+<div id="travelTime" class="text-green-400 font-semibold text-center mt-4 hidden"></div>
+</div>
+<!-- Travel Time -->
+<div id="errorMessage" class="text-red-500 hidden"></div>
+
+  <!-- 🌍 Fullscreen Map -->
+  <div id="map"></div>
+
+  <!-- Leaflet Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    // Base layers
+    const esri_url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+    const esri_attribution = 'Tiles &copy; Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye';
+
+    const lyr_satellite = L.tileLayer(esri_url, {
+      maxZoom: 20,
+      tileSize: 512,
+      zoomOffset: -1,
+      attribution: esri_attribution
+    });
+
+    const lyr_streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    const lg_markers = L.layerGroup();
+
+    const map = L.map('map', {
+      center: [28.6139, 77.2090], // Default view: Delhi
+      zoom: 13,
+      layers: [lyr_streets, lg_markers]
+    });
+
+    const baseMaps = {
+      "Streets": lyr_streets,
+      "Satellite": lyr_satellite
+    };
+
+    const overlayMaps = {
+      "Markers & Routes": lg_markers
+    };
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    let routeLayer;
+
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+    }
+
+    function resetMap() {
+      lg_markers.clearLayers();
+      if (routeLayer) {
+        map.removeLayer(routeLayer);
+        routeLayer = null; // Make sure to reset the routeLayer reference
+      }
+      document.getElementById('errorMessage').classList.add('hidden');
+      document.getElementById('travelTime').classList.add('hidden'); // Hide travel time
+    }
+
+    function geocodeAddress(address, callback) {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (!data || data.length === 0) {
+            showError(`Address not found: ${address}`);
+            return;
+          }
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          callback(lat, lon);
+        })
+        .catch(() => showError("Error fetching geocode data."));
+    }
+
+    function findRoute() {
+      const startAddress = document.getElementById('start').value;
+      const endAddress = document.getElementById('end').value;
+
+      if (!startAddress || !endAddress) {
+        showError("Both addresses are required.");
+        return;
+      }
+
+      resetMap();
+
+      geocodeAddress(startAddress, (startLat, startLon) => {
+        geocodeAddress(endAddress, (endLat, endLon) => {
+          const startMarker = L.marker([startLat, startLon]).bindPopup("Start: " + startAddress).openPopup();
+          const endMarker = L.marker([endLat, endLon]).bindPopup("End: " + endAddress).openPopup();
+          lg_markers.addLayer(startMarker);
+          lg_markers.addLayer(endMarker);
+
+          const routeURL = `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=full&geometries=geojson`;
+
+          fetch(routeURL)
+            .then(res => res.json())
+            .then(data => {
+              if (!data.routes || data.routes.length === 0) {
+                showError("No route found.");
+                return;
+              }
+              const route = data.routes[0].geometry;
+              routeLayer = L.geoJSON(route, {
+                style: { color: 'blue', weight: 4 }
+              }).addTo(map);
+
+              // Show travel time
+              const travelTime = data.routes[0].duration / 60; // Duration in minutes
+              document.getElementById('travelTime').textContent = `Estimated travel time: ${travelTime.toFixed(2)} minutes`;
+              document.getElementById('travelTime').classList.remove('hidden');
+
+              map.fitBounds(routeLayer.getBounds());
+            })
+            .catch(() => showError("Error retrieving route data."));
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>
