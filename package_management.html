@@ -24,7 +24,10 @@
     <h2 class="text-2xl font-semibold mb-4 text-center">Add New Package</h2>
     <form id="addPackageForm" class="space-y-4">
       <input type="text" id="recipientName" placeholder="Recipient Name" class="w-full px-4 py-2 rounded bg-white/80 text-black placeholder-gray-600" required />
+      <input type="text" id="pickupPoint" placeholder="Pickup_point" class="w-full px-4 py-2 rounded bg-white/80 text-black placeholder-gray-600" required />
       <textarea id="address" placeholder="Delivery Address" class="w-full px-4 py-2 rounded bg-white/80 text-black placeholder-gray-600" required></textarea>
+      <input type="date" id="deliveryDate" class="w-full px-4 py-2 rounded bg-white/80 text-black" required />
+      <input type="time" id="deliveryTime" class="w-full px-4 py-2 rounded bg-white/80 text-black" required />
       <button type="submit" class="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 px-4 py-2 rounded text-white font-semibold shadow-md transition-all duration-300">
         ➕ Add Package
       </button>
@@ -32,14 +35,18 @@
   </div>
 
   <!-- Package List Table -->
-  <div class="w-full max-w-6xl overflow-x-auto bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/20 animate-fade-in-up">
+  <div class="w-full max-w-7xl overflow-x-auto bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/20 animate-fade-in-up">
     <table class="w-full table-auto text-center text-white">
       <thead>
         <tr class="bg-white/20">
           <th class="px-4 py-3">ID</th>
           <th class="px-4 py-3">Recipient</th>
+          <th class="px-4 py-3">Pickup Point</th>
           <th class="px-4 py-3">Address</th>
           <th class="px-4 py-3">Status</th>
+          <th class="px-4 py-3">Created At</th>
+          <th class="px-4 py-3">Delivery Date</th>
+          <th class="px-4 py-3">Delivery Time</th>
           <th class="px-4 py-3">Actions</th>
         </tr>
       </thead>
@@ -53,12 +60,15 @@
     document.getElementById("addPackageForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const name = document.getElementById("recipientName").value;
+      const pickup = document.getElementById("pickupPoint").value;
       const address = document.getElementById("address").value;
+      const deliveryDate = document.getElementById("deliveryDate").value;
+      const deliveryTime = document.getElementById("deliveryTime").value;
 
       fetch('add_package.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `recipient_name=${encodeURIComponent(name)}&address=${encodeURIComponent(address)}`
+        body: `recipient_name=${encodeURIComponent(name)}&pickup_point=${encodeURIComponent(pickup)}&address=${encodeURIComponent(address)}&delivery_date=${deliveryDate}&delivery_time=${deliveryTime}`
       })
       .then(res => res.text())
       .then(data => {
@@ -77,16 +87,21 @@
               <tr class="hover:bg-white/20 transition-all">
                 <td class="px-4 py-3">${pkg.id}</td>
                 <td class="px-4 py-3">${pkg.recipient_name}</td>
+                <td class="px-4 py-3">${pkg.pickup_point}</td>
                 <td class="px-4 py-3">${pkg.address}</td>
                 <td class="px-4 py-3">${pkg.status}</td>
-                <td class="px-4 py-3 space-x-2">
-                  <button onclick="updateStatus(${pkg.id})" class="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-black text-sm font-semibold shadow">
-                    ✏️ Update
-                  </button>
-                  <button onclick="deletePackage(${pkg.id})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white text-sm font-semibold shadow">
-                    ❌ Delete
-                  </button>
-                </td>
+                <td class="px-4 py-3">${pkg.created_at}</td>
+                <td class="px-4 py-3">${pkg.delivery_date}</td>
+                <td class="px-4 py-3">${pkg.delivery_time}</td>
+               <td class="px-4 py-3 space-x-2 flex justify-center">
+  <button onclick="updateStatus(${pkg.id})" class="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-black text-sm font-semibold shadow">
+    ✏️ Update
+  </button>
+  <button onclick="deletePackage(${pkg.id})" class="bg-yellow-500 hover:bg-red-600 px-3 py-1 rounded text-white text-sm font-semibold shadow">
+    ❌ Delete
+  </button>
+</td>
+
               </tr>`;
             tbody.innerHTML += row;
           });
