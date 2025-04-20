@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // If valid, store session variables and redirect to homepage/dashboard
             session_start();
             $_SESSION['user_id'] = $row['id'];
-            $_SESSION['user_id'] = $row['id'];
             $_SESSION['username'] = $row['username'];
             $_SESSION['email'] = $row['email'];
 

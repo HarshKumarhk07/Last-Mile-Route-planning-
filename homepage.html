@@ -13,9 +13,10 @@
     }
 
     body {
-      background-color: #0e0e0e;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: #fff;
       scroll-behavior: smooth;
+      transition: background 0.5s ease;
     }
 
     nav {
@@ -23,26 +24,34 @@
       top: 0;
       left: 0;
       width: 100%;
-      background-color: #0b0b0b;
+      background: rgba(0, 0, 0, 0.9);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 40px;
       z-index: 1000;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #444;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
     }
 
     nav .logo {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      color: #00aaff;
+      color: #00d2ff;
+      text-shadow: 0 0 5px #00d2ff;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { text-shadow: 0 0 5px #00d2ff; }
+      50% { text-shadow: 0 0 20px #00d2ff; }
+      100% { text-shadow: 0 0 5px #00d2ff; }
     }
 
     nav ul {
       list-style: none;
       display: flex;
       gap: 25px;
-      position: relative;
     }
 
     nav ul li {
@@ -53,24 +62,25 @@
       text-decoration: none;
       color: #ccc;
       font-size: 16px;
-      transition: color 0.3s;
-      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
     }
 
     nav ul li a:hover,
     nav ul li a.active {
-      color: #00aaff;
+      color: #00d2ff;
+      text-shadow: 0 0 10px #00d2ff;
     }
 
-    /* Dropdown */
     .dropdown-content {
       display: none;
       position: absolute;
       top: 35px;
-      background-color: #1c1c1c;
+      background-color: #222;
       border-radius: 6px;
-      min-width: 140px;
-      z-index: 999;
+      min-width: 160px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      animation: fadeIn 0.3s ease-in-out;
     }
 
     .dropdown-content a {
@@ -78,11 +88,12 @@
       padding: 10px 15px;
       color: #ccc;
       font-size: 14px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .dropdown-content a:hover {
-      background-color: #2a2a2a;
-      color: #00aaff;
+      background-color: #333;
+      color: #00d2ff;
     }
 
     nav ul li:hover .dropdown-content {
@@ -90,24 +101,28 @@
     }
 
     header {
-      padding: 100px 20px 60px;
+      padding: 140px 20px 90px;
       text-align: center;
-      background: linear-gradient(135deg, #00aaff, #005577);
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
     }
 
     header h1 {
-      font-size: 40px;
-      margin-bottom: 10px;
+      font-size: 48px;
+      margin-bottom: 15px;
+      animation: fadeInDown 1s ease;
     }
 
     header p {
-      font-size: 18px;
-      color: #f0f0f0;
+      font-size: 22px;
+      color: #f9f9f9;
+      animation: fadeInUp 1s ease;
     }
 
     section {
-      padding: 60px 20px;
-      border-bottom: 1px solid #222;
+      padding: 80px 20px;
+      border-bottom: 1px solid #444;
       opacity: 0;
       transform: translateY(50px);
       transition: opacity 1s ease, transform 1s ease;
@@ -119,42 +134,72 @@
     }
 
     section h2 {
-      font-size: 28px;
-      color: #00aaff;
-      margin-bottom: 10px;
+      font-size: 30px;
+      color: #00d2ff;
+      margin-bottom: 12px;
+      text-shadow: 0 0 6px #00d2ff;
     }
 
     section p {
-      font-size: 16px;
-      color: #ccc;
-      margin-bottom: 20px;
+      font-size: 17px;
+      color: #e0e0e0;
+      margin-bottom: 25px;
       max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    section img {
+      display: block;
+      margin: 20px auto;
+      max-width: 90%;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .btn {
       display: inline-block;
-      background-color: #00aaff;
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
       color: #fff;
-      padding: 10px 20px;
-      border-radius: 6px;
+      padding: 12px 25px;
+      border-radius: 8px;
       text-decoration: none;
       font-size: 16px;
-      transition: background-color 0.3s;
+      box-shadow: 0 0 12px #00d2ff;
+      transition: all 0.3s ease;
     }
 
     .btn:hover {
-      background-color: #0088cc;
+      background: #00aaff;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00d2ff;
     }
 
     footer {
       text-align: center;
-      padding: 30px 20px;
-      background-color: #1a1a1a;
+      padding: 35px 20px;
+      background-color: #121212;
       font-size: 14px;
       color: #888;
+      border-top: 1px solid #333;
     }
 
-    /* Responsive Nav */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     @media (max-width: 768px) {
       nav {
         flex-direction: column;
@@ -171,21 +216,14 @@
   </style>
 </head>
 <body>
-
   <nav>
     <div class="logo">🚀 RoutePlanner</div>
     <ul>
       <li><a href="#home" class="active">Home</a></li>
       <li><a href="#deliveries">Deliveries</a></li>
       <li><a href="#map">Map</a></li>
-      <li>
-        <a>Packages ▼</a>
-        <div class="dropdown-content">
-          <a href="#packages">Manage Packages</a>
-          <a href="#history">Delivery History</a>
-        </div>
-      </li>
-      <li><a href="#">Logout</a></li>
+      <li><a href="contactus.html">Contact</a></li>
+      <li><a href="logout.php">Logout</a></li>
     </ul>
   </nav>
 
@@ -197,35 +235,24 @@
   <section id="deliveries">
     <h2>📦 Manage Deliveries</h2>
     <p>Assign, monitor, and manage delivery requests with real-time insights and location tracking for each driver.</p>
-    <a href="#" class="btn">Go to Deliveries</a>
+    
+    <a href="package_management.html" class="btn">Go to Deliveries</a>
   </section>
 
   <section id="map">
     <h2>🗺️ Route Optimization</h2>
     <p>Enter your destination details and we’ll generate the fastest, most efficient route using smart routing algorithms.</p>
-    <a href="#" class="btn">Optimize Route</a>
+    
+    <a href="route-planning.html" class="btn">Optimize Route</a>
   </section>
 
-  <section id="packages">
-    <h2>🚚 Track Drivers</h2>
-    <p>Visualize your entire fleet in real-time. Know exactly where your packages and people are — always.</p>
-    <a href="#" class="btn">Live Map View</a>
-  </section>
-
-  <section id="history">
-    <h2>📁 Package Manager</h2>
-    <p>Add, update, or remove package information on the fly. Make sure everything is sorted, tracked, and accounted for.</p>
-    <a href="#" class="btn">Manage Packages</a>
-  </section>
 
   <footer>
     &copy; 2025 Last Mile Route Planning. Built for performance & precision.
   </footer>
 
   <script>
-    // Fade in sections on scroll
     const sections = document.querySelectorAll('section');
-
     const reveal = () => {
       sections.forEach(sec => {
         const rect = sec.getBoundingClientRect();
@@ -238,6 +265,5 @@
     window.addEventListener('scroll', reveal);
     window.addEventListener('load', reveal);
   </script>
-
 </body>
 </html>
