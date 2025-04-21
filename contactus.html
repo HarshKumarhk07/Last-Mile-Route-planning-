@@ -42,12 +42,133 @@
 
       <!-- Contact Info -->
       <div class="mt-10 text-gray-300 text-sm">
-        <p><strong>Email:</strong> <a href="mailto:support@routeplanner.com" class="text-cyan-400 hover:underline">support@routeplanner.com</a></p>
-        <p class="mt-2"><strong>Phone:</strong> +91 7318067978</p>
-        <p class="mt-2"><strong>Address:</strong> 123 Smart Logistics Street, TechCity, USA</p>
+        <p><strong>Email:</strong> <a href="mailto:harshkumarhk525@gmail.com" class="text-cyan-400 hover:underline">harshkumarhk525@gmail.com</a></p>
+        <p class="mt-2"><strong>Phone:</strong> +91 9779152277</p>
+        <p class="mt-2"><strong>Address:</strong>Lovely Professional University, Jalandhar - Delhi, Grand Trunk Rd, Phagwara, Punjab 144411</p>
       </div>
     </div>
   </main>
+
+  <!-- Image Gallery Section -->
+  <div style="margin-top: 50px; margin-bottom: 50px; text-align: center;">
+    <h2 style="font-size: 2em; color: #ffffff; margin-bottom: 30px;">Our Development Team</h2>
+    <div class="gallery" id="gallery"></div>
+
+    <div class="lightbox" id="lightbox">
+      <img id="lightboxImage" src="" alt="Large Preview">
+    </div>
+  </div>
+
+  <style>
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .gallery-item {
+      text-align: center;
+    }
+
+    .gallery img {
+      width: 150px;
+      height: 150px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .gallery img:hover {
+      border: 2px solid #007bff;
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+
+    .dev-title {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .dev-name {
+      color: #ffffff;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .lightbox img {
+      max-width: 80%;
+      max-height: 80%;
+      border: 2px solid white;
+      border-radius: 10px;
+    }
+  </style>
+
+  <script>
+    const timestamp = new Date().getTime(); // Add timestamp for cache busting
+    const developers = [
+      { src: `ranjan.jpeg?t=${timestamp}`, title: "Frontend Developer", name: "Ranjan" },
+      { src: `atul.jpeg?t=${timestamp}`, title: "Frontend Developer", name: "Atul" },
+      { src: `p2.jpeg?t=${timestamp}`, title: "Backend Developer", name: "Harsh" },
+      { src: `p1.jpeg?t=${timestamp}`, title: "Backend Developer", name: "Lovejeet" }
+    ];
+
+    const gallery = document.getElementById("gallery");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImage = document.getElementById("lightboxImage");
+
+    function createGallery() {
+      developers.forEach(dev => {
+        const container = document.createElement("div");
+        container.className = "gallery-item";
+        
+        const img = document.createElement("img");
+        img.src = dev.src;
+        img.alt = dev.title;
+        img.addEventListener("click", function() {
+          lightboxImage.src = dev.src;
+          lightbox.style.display = "flex";
+        });
+        
+        const title = document.createElement("div");
+        title.className = "dev-title";
+        title.textContent = dev.title;
+
+        const name = document.createElement("div");
+        name.className = "dev-name";
+        name.textContent = dev.name;
+        
+        container.appendChild(img);
+        container.appendChild(title);
+        container.appendChild(name);
+        gallery.appendChild(container);
+      });
+    }
+
+    createGallery();
+
+    lightbox.addEventListener("click", function(event) {
+      if (event.target === lightbox) {
+        lightbox.style.display = "none";
+      }
+    });
+  </script>
 
   <!-- Footer -->
   <footer class="bg-gray-900 text-center text-sm text-gray-400 py-6">

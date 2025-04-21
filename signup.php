@@ -16,6 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hash the password before storing it (using bcrypt for better security)
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
+    // Prepared statement to check if username already exists
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // If username already exists, show an error
+    if ($result->num_rows > 0) {
+        echo "<script>alert('❌ Username already taken. Please choose another username.'); window.location.href='signup.html';</script>";
+        exit();
+    }
+
     // Prepared statement to check if email already exists
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param('s', $email);
@@ -28,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // If email does not exist, insert new user
+    // If username and email do not exist, insert new user
     $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
     $stmt->bind_param('sss', $username, $email, $hashed_password);
 

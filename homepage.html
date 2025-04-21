@@ -4,250 +4,116 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Last Mile Route Planning - Home</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      scroll-behavior: smooth;
-      transition: background 0.5s ease;
-    }
-
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 40px;
-      z-index: 1000;
-      border-bottom: 1px solid #444;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-    }
-
-    nav .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #00d2ff;
-      text-shadow: 0 0 5px #00d2ff;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { text-shadow: 0 0 5px #00d2ff; }
-      50% { text-shadow: 0 0 20px #00d2ff; }
-      100% { text-shadow: 0 0 5px #00d2ff; }
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 25px;
-    }
-
-    nav ul li {
-      position: relative;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: #ccc;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    nav ul li a:hover,
-    nav ul li a.active {
-      color: #00d2ff;
-      text-shadow: 0 0 10px #00d2ff;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 35px;
-      background-color: #222;
-      border-radius: 6px;
-      min-width: 160px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .dropdown-content a {
-      display: block;
-      padding: 10px 15px;
-      color: #ccc;
-      font-size: 14px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #333;
-      color: #00d2ff;
-    }
-
-    nav ul li:hover .dropdown-content {
-      display: block;
-    }
-
-    header {
-      padding: 140px 20px 90px;
-      text-align: center;
-      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      color: #fff;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-    }
-
-    header h1 {
-      font-size: 48px;
-      margin-bottom: 15px;
-      animation: fadeInDown 1s ease;
-    }
-
-    header p {
-      font-size: 22px;
-      color: #f9f9f9;
-      animation: fadeInUp 1s ease;
-    }
-
-    section {
-      padding: 80px 20px;
-      border-bottom: 1px solid #444;
-      opacity: 0;
-      transform: translateY(50px);
-      transition: opacity 1s ease, transform 1s ease;
-    }
-
-    section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    section h2 {
-      font-size: 30px;
-      color: #00d2ff;
-      margin-bottom: 12px;
-      text-shadow: 0 0 6px #00d2ff;
-    }
-
-    section p {
-      font-size: 17px;
-      color: #e0e0e0;
-      margin-bottom: 25px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.6;
-    }
-
-    section img {
-      display: block;
-      margin: 20px auto;
-      max-width: 90%;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    .btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-      color: #fff;
-      padding: 12px 25px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 16px;
-      box-shadow: 0 0 12px #00d2ff;
-      transition: all 0.3s ease;
-    }
-
-    .btn:hover {
-      background: #00aaff;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #00d2ff;
-    }
-
-    footer {
-      text-align: center;
-      padding: 35px 20px;
-      background-color: #121212;
-      font-size: 14px;
-      color: #888;
-      border-top: 1px solid #333;
-    }
-
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 20px;
-      }
-
-      nav ul {
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'custom-dark': '#0f2027',
+            'custom-blue': '#00d2ff',
+            'nav-bg': 'rgba(0, 0, 0, 0.9)',
+            'dropdown-bg': '#222',
+            'dropdown-hover': '#333'
+          },
+          keyframes: {
+            pulse: {
+              '0%, 100%': { textShadow: '0 0 5px #00d2ff' },
+              '50%': { textShadow: '0 0 20px #00d2ff' }
+            },
+            fadeInDown: {
+              'from': { opacity: '0', transform: 'translateY(-30px)' },
+              'to': { opacity: '1', transform: 'translateY(0)' }
+            },
+            fadeInUp: {
+              'from': { opacity: '0', transform: 'translateY(30px)' },
+              'to': { opacity: '1', transform: 'translateY(0)' }
+            }
+          },
+          animation: {
+            'pulse': 'pulse 2s infinite',
+            'fade-in-down': 'fadeInDown 1s ease',
+            'fade-in-up': 'fadeInUp 1s ease'
+          }
+        }
       }
     }
-  </style>
+  </script>
 </head>
-<body>
-  <nav>
-    <div class="logo">🚀 RoutePlanner</div>
-    <ul>
-      <li><a href="#home" class="active">Home</a></li>
-      <li><a href="#deliveries">Deliveries</a></li>
-      <li><a href="#map">Map</a></li>
-      <li><a href="contactus.html">Contact</a></li>
-      <li><a href="logout.php">Logout</a></li>
+<body class="bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364] text-white scroll-smooth">
+  <nav class="fixed top-0 left-0 w-full bg-nav-bg flex justify-between items-center px-10 py-4 z-50 border-b border-gray-600 shadow-lg">
+    <div class="text-2xl font-bold text-custom-blue">🚀 RoutePlanner</div>
+    <ul class="flex gap-6 md:flex-row flex-col">
+      <li><a href="#home" class="text-gray-300 hover:text-custom-blue hover:drop-shadow-[0_0_10px_rgba(0,210,255,0.5)] transition-all duration-300">Home</a></li>
+      <li><a href="#deliveries" class="text-gray-300 hover:text-custom-blue hover:drop-shadow-[0_0_10px_rgba(0,210,255,0.5)] transition-all duration-300">Deliveries</a></li>
+      <li><a href="#map" class="text-gray-300 hover:text-custom-blue hover:drop-shadow-[0_0_10px_rgba(0,210,255,0.5)] transition-all duration-300">Map</a></li>
+      <li><a href="contactus.html" class="text-gray-300 hover:text-custom-blue hover:drop-shadow-[0_0_10px_rgba(0,210,255,0.5)] transition-all duration-300">Contact</a></li>
+      <li><a href="logout.php" class="text-gray-300 hover:text-custom-blue hover:drop-shadow-[0_0_10px_rgba(0,210,255,0.5)] transition-all duration-300">Logout</a></li>
     </ul>
   </nav>
 
-  <header id="home">
-    <h1>Last Mile Route Planning</h1>
-    <p>Your delivery partner in speed, precision, and smart logistics.</p>
+  <header id="home" class="pt-36 pb-24 px-5 text-center bg-gradient-to-r from-custom-blue to-[#3a7bd5] shadow-2xl">
+    <h1 class="text-5xl font-extrabold mb-4 animate-fade-in-down">Last Mile Route Planning</h1>
+    <p class="text-2xl text-gray-100 animate-fade-in-up">Your delivery partner in speed, precision, and smart logistics.</p>
   </header>
 
-  <section id="deliveries">
-    <h2>📦 Manage Deliveries</h2>
-    <p>Assign, monitor, and manage delivery requests with real-time insights and location tracking for each driver.</p>
-    
-    <a href="package_management.html" class="btn">Go to Deliveries</a>
+  <section id="about" class="py-20 px-5">
+    <div class="max-w-6xl mx-auto">
+      <!-- First Row -->
+      <div class="flex flex-col md:flex-row items-center gap-8 mb-20">
+        <div class="w-full md:w-1/2">
+          <h2 class="text-3xl font-bold text-custom-blue mb-4">Revolutionizing Last Mile Delivery</h2>
+          <p class="text-lg text-gray-300 leading-relaxed">
+            Our cutting-edge route planning system optimizes delivery paths, reduces costs, and ensures timely deliveries. 
+            With advanced algorithms and real-time tracking, we make last-mile logistics seamless and efficient.
+          </p>
+        </div>
+        <div class="w-full md:w-1/2">
+          <img src="https://images.unsplash.com/photo-1586880244406-556ebe35f282?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+               alt="Delivery Planning" 
+               class="rounded-lg shadow-xl w-full h-[300px] object-cover">
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="flex flex-col-reverse md:flex-row items-center gap-8">
+        <div class="w-full md:w-1/2">
+          <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+               alt="Route Optimization" 
+               class="rounded-lg shadow-xl w-full h-[300px] object-cover">
+        </div>
+        <div class="w-full md:w-1/2">
+          <h2 class="text-3xl font-bold text-custom-blue mb-4">Smart Route Optimization</h2>
+          <p class="text-lg text-gray-300 leading-relaxed">
+            Experience the power of AI-driven route optimization that considers traffic patterns, delivery windows, and vehicle capacity. 
+            Our system helps you reduce fuel consumption and increase delivery efficiency by up to 30%.
+          </p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section id="map">
-    <h2>🗺️ Route Optimization</h2>
-    <p>Enter your destination details and we’ll generate the fastest, most efficient route using smart routing algorithms.</p>
-    
-    <a href="route-planning.html" class="btn">Optimize Route</a>
+  <section id="deliveries" class="py-20 px-5 border-b border-gray-600 opacity-0 transform translate-y-12 transition-all duration-1000">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-custom-blue mb-3 drop-shadow-[0_0_6px_rgba(0,210,255,0.5)]">📦 Manage Deliveries</h2>
+      <p class="text-lg text-gray-300 mb-6 leading-relaxed">Assign, monitor, and manage delivery requests.</p>
+      <a href="package_management.html" class="inline-block bg-gradient-to-r from-custom-blue to-[#3a7bd5] px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-custom-blue/50 transform hover:scale-105 transition-all duration-300">
+        Go to Deliveries
+      </a>
+    </div>
   </section>
 
+  <section id="map" class="py-20 px-5 border-b border-gray-600 opacity-0 transform translate-y-12 transition-all duration-1000">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-custom-blue mb-3 drop-shadow-[0_0_6px_rgba(0,210,255,0.5)]">🗺️ Route Optimization</h2>
+      <p class="text-lg text-gray-300 mb-6 leading-relaxed">Enter your destination details and we'll generate the fastest, most efficient route using smart routing algorithms.</p>
+      <a href="route-planning.html" class="inline-block bg-gradient-to-r from-custom-blue to-[#3a7bd5] px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-custom-blue/50 transform hover:scale-105 transition-all duration-300">
+        Optimize Route
+      </a>
+    </div>
+  </section>
 
-  <footer>
+  <footer class="bg-gray-900 text-center py-8 text-sm text-gray-400">
     &copy; 2025 Last Mile Route Planning. Built for performance & precision.
   </footer>
 
@@ -257,7 +123,8 @@
       sections.forEach(sec => {
         const rect = sec.getBoundingClientRect();
         if (rect.top < window.innerHeight - 100) {
-          sec.classList.add('visible');
+          sec.classList.remove('opacity-0', 'translate-y-12');
+          sec.classList.add('opacity-100', 'translate-y-0');
         }
       });
     };
