@@ -4,8 +4,11 @@ $username = "root";
 $password = "";
 $dbname = "delivery_center_db"; // A single database for all users
 
-// Start the session to get the logged-in user
-session_start();
+// Only start session if it hasn't been started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0; // Assuming user_id is stored in the session
 
 // Create a connection to the shared database
