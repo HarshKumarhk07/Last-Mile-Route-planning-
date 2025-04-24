@@ -1,98 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📍 Current Location</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          backgroundImage: {
-            'world-map': "url('https://wallpapers.com/images/hd/world-map-aesthetic-aky27ab29pjqlih8.jpg')"
-          }
-        }
-      }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Location</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <style>
+    body {
+      background-image: url('https://wallpapers.com/images/hd/world-map-aesthetic-aky27ab29pjqlih8.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
-  </script>
+    .location-box {
+      background: #000000;
+      border-radius: 30px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .get-location-btn {
+      background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
+      border-radius: 50px;
+      padding: 1.2rem 2.5rem;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 25px rgba(0, 114, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .get-location-btn:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 0 35px rgba(0, 114, 255, 0.8);
+    }
+    .get-location-btn:active {
+      transform: scale(0.98) translateY(0);
+    }
+    #map {
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+  </style>
 </head>
-<body class="bg-world-map bg-cover bg-center bg-no-repeat h-screen m-0 flex justify-center items-center font-sans">
-  <div class="bg-gray-900/95 p-8 rounded-lg text-white text-center w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-4">📍 Get Your Current Location</h1>
-  
-    <button onclick="getLocation()" 
-            class="px-4 py-2 rounded text-white bg-gradient-to-r from-[#00c6ff] to-[#0072ff] shadow-[0_0_15px_rgba(0,114,255,0.5)] hover:scale-105 transition duration-300 cursor-pointer">
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="location-box w-full max-w-md text-white text-center">
+    <h1 class="text-3xl font-bold mb-8 text-cyan-400">📍 Get Your Location</h1>
+    
+    <button onclick="getLocation()" class="get-location-btn">
       Get Location
     </button>
   
-    <div id="location" class="mt-4">
-      <p id="lat" class="text-xl"></p>
-      <p id="lon" class="text-xl"></p>
+    <div id="location" class="mt-8">
+      <p id="lat" class="text-xl mb-3 font-semibold"></p>
+      <p id="lon" class="text-xl mb-3 font-semibold"></p>
+      <p id="address" class="text-lg text-gray-300 mt-4"></p>
     </div>
   
-    <div id="errorMessage" class="text-red-500 hidden mt-4"></div>
+    <div id="map" class="w-full h-56 mt-6 hidden"></div>
+    <div id="errorMessage" class="text-red-500 hidden mt-4 font-medium"></div>
   
     <button id="copyButton" 
-            class="mt-4 hidden px-3 py-2 rounded bg-gradient-to-r from-[#00c6ff] to-[#0072ff] shadow-[0_0_15px_rgba(0,114,255,0.5)] hover:bg-gradient-to-r hover:from-[#0072ff] hover:to-[#00c6ff] transition-all duration-300 cursor-pointer">
+            class="mt-6 hidden px-6 py-3 rounded-full bg-gradient-to-r from-[#00c6ff] to-[#0072ff] shadow-[0_0_15px_rgba(0,114,255,0.5)] hover:bg-gradient-to-r hover:from-[#0072ff] hover:to-[#00c6ff] transition-all duration-300 cursor-pointer font-semibold">
       Copy Location
     </button>
   </div>
 
   <script>
+    let map;
+    let marker;
+
     function getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        };
+
+        document.getElementById('errorMessage').textContent = "Getting your precise location...";
+        document.getElementById('errorMessage').classList.remove('hidden', 'text-red-500');
+        document.getElementById('errorMessage').classList.add('text-blue-500');
+        
+        // Try IP-based location first
+        fetch('https://ipapi.co/json/')
+          .then(response => response.json())
+          .then(data => {
+            // If we got IP location, try GPS for more accuracy
+            navigator.geolocation.getCurrentPosition(
+              position => {
+                // Use GPS location if available
+                showPosition(position);
+              },
+              error => {
+                // Fall back to IP-based location
+                showPosition({
+                  coords: {
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                    accuracy: 5000 // Approximate accuracy for IP-based location
+                  }
+                });
+              },
+              options
+            );
+          })
+          .catch(error => {
+            // If IP location fails, try GPS
+            navigator.geolocation.getCurrentPosition(showPosition, showError, options);
+          });
       } else {
-        document.getElementById('errorMessage').textContent = "Geolocation is not supported by this browser.";
-        document.getElementById('errorMessage').classList.remove('hidden');
+        showError({ message: "Geolocation is not supported by this browser." });
       }
     }
 
     function showPosition(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const location = `${lat}, ${lon}`;
+      const lat = position.coords.latitude.toFixed(6);
+      const lon = position.coords.longitude.toFixed(6);
+      const accuracy = Math.round(position.coords.accuracy);
 
-      // Display latitude and longitude
-      document.getElementById('lat').textContent = `Latitude: ${lat}`;
-      document.getElementById('lon').textContent = `Longitude: ${lon}`;
+      document.getElementById('lat').textContent = `Latitude: ${lat}°`;
+      document.getElementById('lon').textContent = `Longitude: ${lon}°`;
       
-      // Show the Copy button
-      const copyButton = document.getElementById('copyButton');
-      copyButton.classList.remove('hidden');
+      // Initialize/update map
+      if (!map) {
+        document.getElementById('map').classList.remove('hidden');
+        map = L.map('map').setView([lat, lon], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        marker = L.marker([lat, lon]).addTo(map);
+      } else {
+        map.setView([lat, lon], 13);
+        marker.setLatLng([lat, lon]);
+      }
 
-      // Add click event to copy the location to clipboard
-      copyButton.onclick = function() {
-        navigator.clipboard.writeText(location)
-          .then(() => {
-            alert('Location copied to clipboard!');
-          })
-          .catch((err) => {
-            console.error('Error copying to clipboard: ', err);
-          });
-      };
+      // Get address using OpenStreetMap Nominatim
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('address').textContent = data.display_name;
+          document.getElementById('errorMessage').textContent = `Accuracy: within ${accuracy} meters`;
+          document.getElementById('errorMessage').classList.remove('text-red-500', 'text-blue-500');
+          document.getElementById('errorMessage').classList.add('text-green-500');
+          document.getElementById('copyButton').classList.remove('hidden');
+        })
+        .catch(error => {
+          document.getElementById('address').textContent = "Address lookup failed";
+          document.getElementById('errorMessage').textContent = `Location found (within ${accuracy}m)`;
+          document.getElementById('copyButton').classList.remove('hidden');
+        });
     }
 
     function showError(error) {
-      let message = "";
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          message = "User denied the request for Geolocation.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          message = "Location information is unavailable.";
-          break;
-        case error.TIMEOUT:
-          message = "The request to get user location timed out.";
-          break;
-        case error.UNKNOWN_ERROR:
-          message = "An unknown error occurred.";
-          break;
+      let errorMessage = "";
+      if (error.code) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied. Please allow location access in your browser settings.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information unavailable. Please try again.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out. Please try again.";
+            break;
+          default:
+            errorMessage = "An unknown error occurred.";
+        }
+      } else {
+        errorMessage = error.message || "Failed to get location.";
       }
-      document.getElementById('errorMessage').textContent = message;
-      document.getElementById('errorMessage').classList.remove('hidden');
+      
+      document.getElementById('errorMessage').textContent = errorMessage;
+      document.getElementById('errorMessage').classList.remove('hidden', 'text-blue-500', 'text-green-500');
+      document.getElementById('errorMessage').classList.add('text-red-500');
+      
+      document.getElementById('lat').textContent = "";
+      document.getElementById('lon').textContent = "";
+      document.getElementById('address').textContent = "";
+      document.getElementById('copyButton').classList.add('hidden');
+      document.getElementById('map').classList.add('hidden');
     }
+
+    // Copy button functionality
+    document.getElementById('copyButton').addEventListener('click', () => {
+      const lat = document.getElementById('lat').textContent;
+      const lon = document.getElementById('lon').textContent;
+      const address = document.getElementById('address').textContent;
+      const locationText = `${lat}\n${lon}\n${address}`;
+      
+      navigator.clipboard.writeText(locationText).then(() => {
+        const originalText = document.getElementById('copyButton').textContent;
+        document.getElementById('copyButton').textContent = 'Copied!';
+        setTimeout(() => {
+          document.getElementById('copyButton').textContent = originalText;
+        }, 2000);
+      });
+    });
   </script>
 </body>
 </html>
