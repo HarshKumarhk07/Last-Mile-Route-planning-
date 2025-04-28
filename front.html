@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Mile Route Planning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('de.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .btn-signup {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="relative">
+    <header class="py-6 px-4">
+        <nav class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-route text-3xl text-green-400"></i>
+                <div>
+                    <h1 class="text-3xl font-bold text-cyan-400">Last Mile Route Planning</h1>
+                    <p class="text-green-400 text-sm">Optimize Your Delivery Network</p>
+                </div>
+            </div>
+            <div class="space-x-4">
+                <button onclick="location.href='login.html'" class="btn btn-login px-6 py-2 rounded-full">Login</button>
+                <button onclick="location.href='signup.html'" class="btn btn-signup px-6 py-2 rounded-full">Sign Up</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <section class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-6">Transform Your Delivery Operations</h2>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Streamline your last-mile delivery with intelligent route optimization and real-time tracking
+            </p>
+        </section>
+
+        <section class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="glass-effect feature-card p-6">
+                <i class="fas fa-map-location-dot text-4xl text-amber-400 mb-4"></i>
+                <h3 class="text-xl font-bold mb-3">Live ETA & Mapping</h3>
+                <p class="text-gray-300">Track estimated arrival times with interactive live maps for each delivery</p>
+            </div>
+            <div class="glass-effect feature-card p-6">
+                <i class="fas fa-clock text-4xl text-blue-400 mb-4"></i>
+                <h3 class="text-xl font-bold mb-3">Real-Time Tracking</h3>
+                <p class="text-gray-300">Monitor your deliveries in real-time with precise GPS tracking</p>
+            </div>
+            <div class="glass-effect feature-card p-6">
+                <i class="fas fa-history text-4xl text-green-400 mb-4"></i>
+                <h3 class="text-xl font-bold mb-3">Delivery History</h3>
+                <p class="text-gray-300">Access and track your complete delivery history and performance analytics</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="absolute bottom-0 w-full bg-black bg-opacity-50 py-4">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Last Mile Route Planning. Built for performance & precision.</p>
+        </div>
+    </footer>
+</body>
+</html>
