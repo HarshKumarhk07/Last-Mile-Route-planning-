@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - RoutePlanner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 text-white min-h-screen flex flex-col">
+  <!-- Navigation -->
+  <nav
+    class="fixed top-0 left-0 w-full bg-nav-bg flex justify-between items-center px-4 sm:px-10 py-4 z-50 bg-gray-900/95">
+    <a href="homepage.html" class="text-xl sm:text-2xl font-bold text-cyan-400">🚀 RoutePlanner</a>
+
+    <!-- Hamburger Menu Button -->
+    <button id="menuBtn" class="md:hidden text-gray-300 hover:text-cyan-400 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path class="block" id="menuIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16" />
+        <path class="hidden" id="closeIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <ul id="mobileMenu" class="fixed md:relative top-[60px] md:top-0 left-0 w-full md:w-auto bg-gray-900/95 md:bg-transparent 
+                               flex flex-col md:flex-row gap-2 md:gap-6 px-4 py-4 md:py-0 md:flex
+                               transform transition-transform duration-300 ease-in-out md:transform-none
+                               -translate-x-full md:translate-x-0">
+      <li><a href="homepage.html"
+          class="block py-2 md:py-0 text-gray-300 hover:text-cyan-400 transition-all duration-300">Home</a></li>
+      <li><a href="homepage.html#deliveries"
+          class="block py-2 md:py-0 text-gray-300 hover:text-cyan-400 transition-all duration-300">Deliveries</a></li>
+      <li><a href="homepage.html#map"
+          class="block py-2 md:py-0 text-gray-300 hover:text-cyan-400 transition-all duration-300">Map</a></li>
+      <li><a href="contactus.html" class="block py-2 md:py-0 text-cyan-400">Contact</a></li>
+      <li><a href="logout.php"
+          class="block py-2 md:py-0 text-gray-300 hover:text-cyan-400 transition-all duration-300">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-cyan-500 text-white py-8 sm:py-10 shadow-md text-center mt-16">
+    <h1 class="text-3xl sm:text-4xl font-bold">Contact Us</h1>
+    <p class="text-base sm:text-lg mt-2 px-4">We're here to help. Let us know how we can assist you.</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div class="max-w-3xl mx-auto bg-white/5 p-6 sm:p-8 rounded-xl shadow-lg backdrop-blur-sm border border-white/10">
+      <h2 class="text-2xl sm:text-3xl font-semibold text-cyan-400 mb-6 text-center">Get in Touch</h2>
+      <form class="space-y-4 sm:space-y-6" action="/api/contact.php" method="POST">
+        <div>
+          <label for="name" class="block mb-2 text-sm font-medium">Full Name</label>
+          <input type="text" id="name" name="name" required
+            class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400">
+        </div>
+        <div>
+          <label for="email" class="block mb-2 text-sm font-medium">Email Address</label>
+          <input type="email" id="email" name="email" required
+            class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400">
+        </div>
+        <div>
+          <label for="query" class="block mb-2 text-sm font-medium">Your Message</label>
+          <textarea id="query" name="query" rows="5" required
+            class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"></textarea>
+        </div>
+        <button type="submit"
+          class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-md transition duration-300">
+          Send Message
+        </button>
+      </form>
+
+      <!-- Contact Info -->
+      <div class="mt-8 sm:mt-10 text-gray-300 text-sm sm:text-base space-y-3">
+        <p><strong>Email:</strong> <a href="mailto:harshkumarhk525@gmail.com"
+            class="text-cyan-400 hover:underline">harshkumarhk525@gmail.com</a></p>
+        <p><strong>Phone:</strong> +91 9779152277</p>
+        <p><strong>Address:</strong> Lovely Professional University, Jalandhar - Delhi, Grand Trunk Rd, Phagwara, Punjab
+          144411</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Image Gallery Section -->
+  <div class="py-12 sm:py-16 px-4">
+    <h2 class="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-10">Our Development Team</h2>
+    <div class="gallery" id="gallery"></div>
+    <div class="lightbox" id="lightbox">
+      <img id="lightboxImage" src="" alt="Large Preview">
+    </div>
+  </div>
+
+  <style>
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .gallery-item {
+      text-align: center;
+      width: calc(50% - 16px);
+      max-width: 120px;
+    }
+
+    @media (min-width: 640px) {
+      .gallery-item {
+        width: calc(33.333% - 16px);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .gallery-item {
+        width: calc(25% - 16px);
+      }
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 150px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      object-fit: cover;
+      transition: all 0.3s ease;
+    }
+
+    .gallery img:hover {
+      border: 2px solid #0891b2;
+      transform: scale(1.05);
+    }
+
+    .dev-title {
+      margin-top: 8px;
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 0.875rem;
+    }
+
+    .dev-name {
+      color: #ffffff;
+      margin-top: 4px;
+      font-style: italic;
+      font-size: 0.875rem;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90vh;
+      border: 2px solid white;
+      border-radius: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .lightbox img {
+        max-width: 80%;
+        max-height: 80vh;
+      }
+    }
+  </style>
+
+  <script>
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+    const closeIcon = document.getElementById('closeIcon');
+    let isMenuOpen = false;
+
+    menuBtn.addEventListener('click', () => {
+      isMenuOpen = !isMenuOpen;
+      if (isMenuOpen) {
+        mobileMenu.classList.remove('-translate-x-full');
+        menuIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+      } else {
+        mobileMenu.classList.add('-translate-x-full');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      }
+    });
+
+    // Handle resize events
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        mobileMenu.classList.remove('-translate-x-full');
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      } else if (!isMenuOpen) {
+        mobileMenu.classList.add('-translate-x-full');
+      }
+    });
+
+    // Gallery
+    const timestamp = new Date().getTime();
+    const developers = [
+      { src: `ranjan.jpeg?t=${timestamp}`, name: "Ranjan" },
+      { src: `atul.jpeg?t=${timestamp}`, name: "Atul" },
+      { src: `p2.jpeg?t=${timestamp}`, name: "Harsh" },
+      { src: `p1.jpeg?t=${timestamp}`, name: "Lovejeet" }
+    ];
+
+    const gallery = document.getElementById("gallery");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImage = document.getElementById("lightboxImage");
+
+    function createGallery() {
+      developers.forEach(dev => {
+        const container = document.createElement("div");
+        container.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.src = dev.src;
+        img.alt = dev.title;
+        img.addEventListener("click", function () {
+          lightboxImage.src = dev.src;
+          lightbox.style.display = "flex";
+        });
+
+        const title = document.createElement("div");
+        title.className = "dev-title";
+        title.textContent = dev.title;
+
+        const name = document.createElement("div");
+        name.className = "dev-name";
+        name.textContent = dev.name;
+
+        container.appendChild(img);
+        container.appendChild(title);
+        container.appendChild(name);
+        gallery.appendChild(container);
+      });
+    }
+
+    createGallery();
+
+    lightbox.addEventListener("click", function (event) {
+      if (event.target === lightbox) {
+        lightbox.style.display = "none";
+      }
+    });
+  </script>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-center text-sm text-gray-400 py-4 sm:py-6 mt-8">
+    &copy; 2025 Last Mile Route Planning. All rights reserved.
+  </footer>
+
+</body>
+
+</html>

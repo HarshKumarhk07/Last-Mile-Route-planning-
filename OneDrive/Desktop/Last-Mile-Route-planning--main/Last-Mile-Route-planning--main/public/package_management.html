@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📦 Package Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+    }
+
+    .status-form {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .message {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      animation: slideIn 0.3s ease-out;
+      z-index: 50;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+      }
+
+      to {
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center py-10 px-4 text-white">
+
+  <!-- Message Display -->
+  <div id="messageBox" class="message"></div>
+
+  <h1 class="text-4xl font-extrabold mb-8 animate-pulse">📦 Admin Package Management</h1>
+
+  <!-- Add Package Form -->
+  <div
+    class="w-full max-w-xl bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-10 shadow-2xl border border-white/20 animate-fade-in-up">
+    <h2 class="text-2xl font-semibold mb-4 text-center">Add New Package</h2>
+    <form id="addPackageForm" class="space-y-4">
+      <input type="text" id="recipientName" placeholder="Recipient Name"
+        class="w-full px-4 py-2 rounded bg-white/80 text-black placeholder-gray-600" required />
+      <input type="text" id="pickupPoint" placeholder="Pickup_point"
+        class="w-full px-4 py-2 rounded bg-white/80 text-black placeholder-gray-600" required />
+      <textarea id="address" placeholder="Delivery Address"
+        class="w-full px-4 py-2 rounded bg-white/80 text-black placeholder-gray-600" required></textarea>
+      <input type="date" id="deliveryDate" class="w-full px-4 py-2 rounded bg-white/80 text-black" required />
+      <input type="time" id="deliveryTime" class="w-full px-4 py-2 rounded bg-white/80 text-black" required />
+      <button type="submit"
+        class="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 px-4 py-2 rounded text-white font-semibold shadow-md transition-all duration-300">
+        ➕ Add Package
+      </button>
+    </form>
+  </div>
+
+  <!-- Package List Table -->
+  <div
+    class="w-full max-w-7xl overflow-x-auto bg-white/10 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/20 animate-fade-in-up">
+    <table class="w-full table-auto text-center text-white">
+      <thead>
+        <tr class="bg-white/20">
+          <th class="px-4 py-3">ID</th>
+          <th class="px-4 py-3">Recipient</th>
+          <th class="px-4 py-3">Pickup Point</th>
+          <th class="px-4 py-3">Address</th>
+          <th class="px-4 py-3">Status</th>
+          <th class="px-4 py-3">Created At</th>
+          <th class="px-4 py-3">Delivery Date</th>
+          <th class="px-4 py-3">Delivery Time</th>
+          <th class="px-4 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="packageTableBody">
+        <!-- Dynamic Content -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.getElementById("addPackageForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("recipientName").value;
+      const pickup = document.getElementById("pickupPoint").value;
+      const address = document.getElementById("address").value;
+      const deliveryDate = document.getElementById("deliveryDate").value;
+      const deliveryTime = document.getElementById("deliveryTime").value;
+
+      fetch('/api/add_package.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `recipient_name=${encodeURIComponent(name)}&pickup_point=${encodeURIComponent(pickup)}&address=${encodeURIComponent(address)}&delivery_date=${deliveryDate}&delivery_time=${deliveryTime}`
+      })
+        .then(res => res.text())
+        .then(data => {
+          alert(data);
+          location.reload();
+        });
+    });
+
+    window.onload = () => {
+      fetch('/api/get_packages.php')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById("packageTableBody");
+          data.forEach(pkg => {
+            const row = ` 
+              <tr class="hover:bg-white/20 transition-all" data-id="${pkg.id}">
+                <td class="px-4 py-3">${pkg.id}</td>
+                <td class="px-4 py-3">${pkg.recipient_name}</td>
+                <td class="px-4 py-3">${pkg.pickup_point}</td>
+                <td class="px-4 py-3">${pkg.address}</td>
+                <td class="px-4 py-3 relative">
+                  <span class="status-text">${pkg.status}</span>
+                  <form class="status-form" onsubmit="return handleStatusUpdate(${pkg.id}, this)">
+                    <select name="status" class="w-full p-2 mb-2 rounded bg-white text-black">
+                      <option value="Pending" ${pkg.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                      <option value="In Transit" ${pkg.status === 'In Transit' ? 'selected' : ''}>In Transit</option>
+                      <option value="Delivered" ${pkg.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                    </select>
+                    <div class="flex gap-2">
+                      <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white text-sm">Save</button>
+                      <button type="button" onclick="hideStatusForm(this)" class="flex-1 bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded text-white text-sm">Cancel</button>
+                    </div>
+                  </form>
+                </td>
+                <td class="px-4 py-3">${pkg.created_at}</td>
+                <td class="px-4 py-3">${pkg.delivery_date}</td>
+                <td class="px-4 py-3">${pkg.delivery_time}</td>
+                <td class="px-4 py-3 space-x-2 flex justify-center">
+                  <button onclick="showStatusForm(this)" class="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-black text-sm font-semibold shadow">
+                    ✏️ Update
+                  </button>
+                  <button onclick="deletePackage(${pkg.id})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white text-sm font-semibold shadow">
+                    ❌ Delete
+                  </button>
+                </td>
+              </tr>`;
+            tbody.innerHTML += row;
+          });
+        });
+    };
+
+    // Message display function
+    function showMessage(message, type = 'success') {
+      const messageBox = document.getElementById('messageBox');
+      messageBox.textContent = message;
+      messageBox.className = `message ${type === 'success' ? 'bg-green-600' : 'bg-red-600'} text-white px-6 py-3 rounded shadow-lg`;
+      messageBox.style.display = 'block';
+
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        messageBox.style.display = 'none';
+      }, 3000);
+    }
+
+    // Show status update form
+    function showStatusForm(button) {
+      // Hide any other open forms first
+      document.querySelectorAll('.status-form').forEach(form => {
+        form.style.display = 'none';
+      });
+
+      const td = button.closest('tr').querySelector('td:nth-child(5)');
+      const form = td.querySelector('.status-form');
+      form.style.display = 'block';
+    }
+
+    // Hide status update form
+    function hideStatusForm(button) {
+      button.closest('.status-form').style.display = 'none';
+    }
+
+    // Handle status update
+    function handleStatusUpdate(id, form) {
+      const newStatus = form.status.value;
+
+      fetch('/api/update_package.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${id}&status=${encodeURIComponent(newStatus)}`
+      })
+        .then(response => response.text())
+        .then(data => {
+          if (data.includes("successfully")) {
+            showMessage("Status updated successfully!");
+            const statusText = form.closest('td').querySelector('.status-text');
+            statusText.textContent = newStatus;
+            hideStatusForm(form);
+          } else {
+            showMessage(data, 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showMessage('Error updating package status', 'error');
+        });
+
+      return false; // Prevent form submission
+    }
+
+    function deletePackage(id) {
+      if (confirm("Are you sure you want to delete this package?")) {
+        fetch('/api/delete_package.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `package_id=${id}`
+        })
+          .then(response => response.text())
+          .then(data => {
+            showMessage(data);
+            if (data.includes("successfully")) {
+              document.querySelector(`tr[data-id="${id}"]`).remove();
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showMessage('Error deleting package', 'error');
+          });
+      }
+    }
+  </script>
+
+</body>
+
+</html>
